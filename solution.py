@@ -18,6 +18,7 @@ problem instance: [initial_stamina,max_stamina, T, D, DEMONS]
 """
 
 
+from collections import OrderedDict
 from io_simulate import * #import input/output/simulation functions
 import glob         #used to get directories files
 from heapq import *
@@ -109,8 +110,8 @@ def fight_demon(turn_instance):
   if len(remaining_demons)==0: return
 
   #select demon
-  #demon_idx=select_demon(turn_instance)
-  demon_idx=select_demon_average(turn_instance)
+  demon_idx=select_demon(turn_instance)
+  #demon_idx=select_demon_average(turn_instance)
 
   if demon_idx<0:return
 
@@ -120,7 +121,8 @@ def fight_demon(turn_instance):
   turn_instance["current_stamina"]-=consumed_stamina
 
   #remove the demon
-  remaining_demons.remove(demon_idx)
+  #remaining_demons.remove(demon_idx)
+  del remaining_demons[demon_idx]
 
   turn_instance["solution"].append(demon_idx)
 
@@ -185,8 +187,20 @@ def solve(problem_instance=None):
   turn_instance={}
   turn_instance["demons"]=demons
   turn_instance["turn"]=0
-  turn_instance["remaining_demons"]=set()
-  for idx in demons:turn_instance["remaining_demons"].add(idx)
+  #turn_instance["remaining_demons"]=set()
+  #for idx in demons:turn_instance["remaining_demons"].add(idx)
+
+  turn_instance["remaining_demons"]=OrderedDict()
+  new_rem=[]
+  for demon_idx in demons:
+    score=0
+    if len(demons[demon_idx][4])!=0:
+      score=statistics.mean(demons[demon_idx][4])
+    new_rem.append((score,demon_idx))
+  new_rem.sort(key=lambda x:-x[0])
+  for score,idx in new_rem:
+    turn_instance["remaining_demons"][idx]=score
+
   turn_instance["defeated_demons"]={}
   turn_instance["useless_demons"]={}
   turn_instance["stamina_demons"]={}
@@ -195,14 +209,18 @@ def solve(problem_instance=None):
   turn_instance["max_stamina"]=max_stamina
   turn_instance["solution"]=[]
 
-  heap_score=[]
+  """heap_score=[]
   for demon_idx in demons:
     score=0
     if len(demons[demon_idx][4])!=0:
       score=statistics.mean(demons[demon_idx][4])
-    heap_score.append((score,demon_idx))
+    heap_score.append((-score,demon_idx))
+  #heapify(heap_score)
+  heap_score.sort(key=lambda x:-x[0])
+  heap_score=heap_score[0:10000]
   heapify(heap_score)
-  turn_instance["heap_score"]=heap_score
+  turn_instance["heap_score"]=heap_score"""
+  
   
 
   for t in range(T):
