@@ -36,8 +36,8 @@ def read_input_file(filename):
   problem_instance.append(max_stamina)
   problem_instance.append(T)
   problem_instance.append(D)
-  demons=[]
-  for _ in range(D):
+  demons={}
+  for i in range(D):
     demon=list(map(int,f.readline().rstrip().split()))
 
     consumed_stamina,turn_wait,recovered_stamina, num_frag=demon[0:4]
@@ -50,7 +50,7 @@ def read_input_file(filename):
     demon.append(num_frag)
     demon.append(fragments)
 
-    demons.append(demon)
+    demons[i]=demon
   
   problem_instance.append(demons)
 
@@ -64,7 +64,7 @@ def print_problem_instance(problem_instance):
   print(problem_instance[:4])
 
   for d in problem_instance[4]:
-    print(d)
+    print(d,problem_instance[4][d])
 
   return
 
@@ -125,10 +125,10 @@ THE FOLLOWING LINES MUST BE COMMENTED WHEN SOLVING THE PROBLEM
 """
 
 #Check if the input is parsed correctly
-"""filename="data/00.txt"
+filename="data/00.txt"
 problem_instance=read_input_file(filename)
 print_problem_instance(problem_instance)
-
+"""
 #check if the solution is saved correctly
 sol1=[1,2,3,4,5]  #COMPLETE
 savefile="output/solution_test.txt"
