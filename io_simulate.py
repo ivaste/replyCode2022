@@ -75,8 +75,8 @@ def save_solution(solution=None,filename=None):
   
   f = open(filename, "w")
 
-  #...COMPLETE...
-  f.write("blablabla"+"\n")
+  for d in solution:
+    f.write(str(d)+"\n")
 
   f.close()
 
@@ -125,13 +125,13 @@ THE FOLLOWING LINES MUST BE COMMENTED WHEN SOLVING THE PROBLEM
 """
 
 #Check if the input is parsed correctly
-filename="data/00.txt"
+"""filename="data/00.txt"
 problem_instance=read_input_file(filename)
 print_problem_instance(problem_instance)
-"""
+
 #check if the solution is saved correctly
-sol1=...  #COMPLETE
-savefile="solution_test.txt"
+sol1=[1,2,3,4,5]  #COMPLETE
+savefile="output/solution_test.txt"
 save_solution(sol1, savefile)
 sol2=read_solution_file(savefile)
 equal=compare_solutions(sol1,sol2)
