@@ -47,14 +47,16 @@ def solve_all(files=None,verbose=0):
 ###################################################
 
 #input files paths
-files=glob.glob("*.txt")
+files=glob.glob("data/*.txt")
 
 #solve 1 single problem
 filename=files[0]
 problem_instance=read_input_file(filename)
 solution=solve(problem_instance)
-score=simulate_solution(solution,problem_instance,verbose=0)
-print(filename,score)
+savefile="output/"+filename
+save_solution(solution, savefile)
+#score=simulate_solution(solution,problem_instance,verbose=0)
+#print(filename,score)
 
 #solve all problems
 #solve_all(files)
