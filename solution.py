@@ -20,7 +20,8 @@ problem instance: [initial_stamina,max_stamina, T, D, DEMONS]
 
 from io_simulate import * #import input/output/simulation functions
 import glob         #used to get directories files
-
+from heapq import *
+import statistics
 
 #turn simulation
 
@@ -51,29 +52,73 @@ def recover_stamina(turn_instance):
   stamina_recovered=stamina_demons[turn]
   turn_instance["current_stamina"]+=stamina_recovered
 
+def select_demon(turn_instance):
+  remaining_demons=turn_instance["remaining_demons"]
+  idx=0
+  found=False
+  
+  for demon_idx in remaining_demons:
+
+    demon=turn_instance["demons"][demon_idx]
+    consumed_stamina=demon[0]
+    if turn_instance["current_stamina"]<consumed_stamina:continue
+
+    found=True
+    idx=demon_idx
+    break
+
+  if not found:return -1
+  demon_idx=idx
+  return demon_idx
+
+def select_demon_average(turn_instance):
+  remaining_demons=turn_instance["remaining_demons"]
+
+  heap_score=turn_instance["heap_score"]
+
+  if not heap_score:return -1
+  new_heap=[]
+
+  #while the best has a too high stamina pop it
+  score,demon_idx=heap_score[0]
+  demon=turn_instance["demons"][demon_idx]
+  consumed_stamina=demon[0]
+  while heap_score and turn_instance["current_stamina"]<consumed_stamina:
+    heappush(new_heap,heappop(heap_score))
+    if heap_score:
+      score,demon_idx=heap_score[0]
+      demon=turn_instance["demons"][demon_idx]
+      consumed_stamina=demon[0]
+
+  if not heap_score:
+    turn_instance["heap_score"]=new_heap
+    return -1
+  
+  #rebuil the heap
+  while new_heap:
+    heappush(heap_score,heappop(new_heap))
+  
+  score,demon_idx=heappop(heap_score)
+  return demon_idx
+
+  
+  
+
 def fight_demon(turn_instance):
   remaining_demons=turn_instance["remaining_demons"]
   if len(remaining_demons)==0: return
 
   #select demon
-  idx=0
-  found=False
-  #for demon_idx in range(len(turn_instance["demons"])):
-  for demon_idx in remaining_demons:
-    #if demon_idx not in remaining_demons:continue
+  #demon_idx=select_demon(turn_instance)
+  demon_idx=select_demon_average(turn_instance)
 
-    demon=turn_instance["demons"][demon_idx]
-    consumed_stamina=demon[0]
-    if turn_instance["current_stamina"]<=consumed_stamina:continue
+  if demon_idx<0:return
 
-    #consume stamina
-    turn_instance["current_stamina"]-=consumed_stamina
-    found=True
-    idx=demon_idx
-    break
-  
-  if not found: return
-  demon_idx=idx
+  #consume stamina
+  demon=turn_instance["demons"][demon_idx]
+  consumed_stamina=turn_instance["current_stamina"]
+  turn_instance["current_stamina"]-=consumed_stamina
+
   #remove the demon
   remaining_demons.remove(demon_idx)
 
@@ -149,6 +194,16 @@ def solve(problem_instance=None):
   turn_instance["current_stamina"]=initial_stamina
   turn_instance["max_stamina"]=max_stamina
   turn_instance["solution"]=[]
+
+  heap_score=[]
+  for demon_idx in demons:
+    score=0
+    if len(demons[demon_idx][4])!=0:
+      score=statistics.mean(demons[demon_idx][4])
+    heap_score.append((score,demon_idx))
+  heapify(heap_score)
+  turn_instance["heap_score"]=heap_score
+  
 
   for t in range(T):
     turn(turn_instance)
