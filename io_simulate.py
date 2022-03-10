@@ -28,9 +28,31 @@ other functions are used to input/output debug
 def read_input_file(filename):
   f = open(filename, "r")
 
-  #... COMPLETE ...
-  problem_instance=...
-  #... COMPLETE ...
+  problem_instance=[]
+
+  initial_stamina,max_stamina, T, D=list(map(int,input().rstrip().split()))
+
+  problem_instance.append(initial_stamina)
+  problem_instance.append(max_stamina)
+  problem_instance.append(T)
+  problem_instance.append(D)
+  demons=[]
+  for _ in range(D):
+    demon=list(map(int,input().rstrip().split()))
+
+    consumed_stamina,turn_wait,recovered_stamina, num_frag=demon[0:4]
+    fragments=demon[4:]
+
+    demon=[]
+    demon.append(consumed_stamina)
+    demon.append(turn_wait)
+    demon.append(recovered_stamina)
+    demon.append(num_frag)
+    demon.append(fragments)
+
+    demons.append(demon)
+  
+  problem_instance.append(demons)
 
   f.close()
 
@@ -39,7 +61,7 @@ def read_input_file(filename):
 #Check if the input is parsed correctly
 def print_problem_instance(problem_instance):
 
-  #...COMPLETE...
+  print(problem_instance)
 
   return
 
