@@ -123,12 +123,12 @@ def simulate_solution(solution=None,problem_instance=None,verbose=0):
 """
 THE FOLLOWING LINES MUST BE COMMENTED WHEN SOLVING THE PROBLEM
 """
-
+"""
 #Check if the input is parsed correctly
 filename="data/00.txt"
 problem_instance=read_input_file(filename)
 print_problem_instance(problem_instance)
-"""
+
 #check if the solution is saved correctly
 sol1=[1,2,3,4,5]  #COMPLETE
 savefile="output/solution_test.txt"

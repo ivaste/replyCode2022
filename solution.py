@@ -179,11 +179,13 @@ def solve_all(files=None,verbose=0):
 files=glob.glob("data/*.txt")
 
 #solve 1 single problem
-filename=files[0]
-problem_instance=read_input_file(filename)
-solution=solve(problem_instance)
-savefile="output/"+filename[5:]
-save_solution(solution, savefile)
+for filename in files:
+  print("Executing",filename)
+  #filename=files[0]
+  problem_instance=read_input_file(filename)
+  solution=solve(problem_instance)
+  savefile="output/"+filename[5:]
+  save_solution(solution, savefile)
 #score=simulate_solution(solution,problem_instance,verbose=0)
 #print(filename,score)
 
